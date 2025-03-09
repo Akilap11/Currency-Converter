@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const Transfer = require('/models/Transfer');
+const Transfer = require('../models/transfer');
 
 const API_KEY = process.env.EXCHANGE_RATE_API_KEY;
 const ALLOWED_CURRENCIES = { "USA": "USD", "Sri Lanka": "LKR", "Australia": "AUD", "India": "INR" };

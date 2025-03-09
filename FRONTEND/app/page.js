@@ -1,95 +1,80 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Container, Typography, Select, MenuItem, TextField, Button, Card, CardContent } from "@mui/material";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [fromCountry, setFromCountry] = useState("");
+  const [toCountry, setToCountry] = useState("");
+  const [amount, setAmount] = useState("");
+  const [convertedAmount, setConvertedAmount] = useState(null);
+  const [transfers, setTransfers] = useState([]);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  const countries = ["USA", "Sri Lanka", "Australia", "India"];
+
+  const fetchTransfers = async () => {
+    const response = await axios.get("http://localhost:5000/api/transfers");
+    setTransfers(response.data);
+  };
+
+  useEffect(() => {
+    fetchTransfers();
+  }, []);
+
+  const handleConvert = async () => {
+    const response = await axios.post("http://localhost:5000/api/convert", {
+      fromCountry,
+      toCountry,
+      amount,
+    });
+    setConvertedAmount(response.data.convertedAmount);
+    fetchTransfers();
+  };
+
+  const handleDelete = async (id) => {
+    await axios.delete(`http://localhost:5000/api/transfer/${id}`);
+    fetchTransfers();
+  };
+
+  return (
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Currency Converter
+      </Typography>
+
+      <Select value={fromCountry} onChange={(e) => setFromCountry(e.target.value)} displayEmpty>
+        <MenuItem value="" disabled>Select From Country</MenuItem>
+        {countries.map((country) => (
+          <MenuItem key={country} value={country}>{country}</MenuItem>
+        ))}
+      </Select>
+
+      <Select value={toCountry} onChange={(e) => setToCountry(e.target.value)} displayEmpty>
+        <MenuItem value="" disabled>Select To Country</MenuItem>
+        {countries.map((country) => (
+          <MenuItem key={country} value={country}>{country}</MenuItem>
+        ))}
+      </Select>
+
+      <TextField label="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
+
+      <Button variant="contained" onClick={handleConvert}>Convert</Button>
+
+      {convertedAmount && <Typography>Converted Amount: {convertedAmount}</Typography>}
+
+      <Typography variant="h5" gutterBottom>
+        Transfer History
+      </Typography>
+      {transfers.map((t) => (
+        <Card key={t._id} variant="outlined" style={{ marginBottom: "10px" }}>
+          <CardContent>
+            <Typography>{t.amount} {t.fromCountry} → {t.convertedAmount} {t.toCountry}</Typography>
+            <Button variant="outlined" color="secondary" onClick={() => handleDelete(t._id)}>
+              Revoke
+            </Button>
+          </CardContent>
+        </Card>
+      ))}
+    </Container>
   );
 }

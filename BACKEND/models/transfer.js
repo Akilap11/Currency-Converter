@@ -1,12 +1,12 @@
+// backend/models/Transfer.js
 const mongoose = require('mongoose');
 
-const TransferSchema = new mongoose.Schema({
+const transferSchema = new mongoose.Schema({
   fromCountry: String,
   toCountry: String,
   amount: Number,
   convertedAmount: Number,
-  exchangeRate: Number,
-  date: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Transfer', TransferSchema);
+const Transfer = mongoose.model('Transfer', transferSchema);
+module.exports = Transfer;
