@@ -14,6 +14,11 @@ import {
   Grid,
   Paper,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 
 export default function Home() {
@@ -26,6 +31,8 @@ export default function Home() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversionTimer, setConversionTimer] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [transferToDelete, setTransferToDelete] = useState(null);
 
   const countries = [
     { name: "USA", currency: "USD" },
@@ -120,11 +127,26 @@ export default function Home() {
     }
   };
 
+  // Open revoke confirmation dialog
+  const openConfirmDialog = (id) => {
+    setTransferToDelete(id);
+    setOpenDialog(true);
+  };
+
+  // Close revoke confirmation  dialog
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setTransferToDelete(null);
+  };
+
   // Handle Deleting Transfer
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!transferToDelete) return;
+    
     try {
-      await axios.delete(`http://localhost:5000/api/transfer/${id}`);
+      await axios.delete(`http://localhost:5000/api/transfer/${transferToDelete}`);
       fetchTransfers();
+      handleCloseDialog();
     } catch (error) {
       console.error("Error deleting transfer:", error);
     }
@@ -228,7 +250,7 @@ export default function Home() {
             {/* Amount Field */}
             <TextField
               fullWidth
-              label={`Amount (${getCurrencySymbol(fromCountry)})`}
+              label={`Transfer Amount (${getCurrencySymbol(fromCountry)})`}
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
@@ -365,7 +387,7 @@ export default function Home() {
                         variant="outlined" 
                         color="error"
                         size="small"
-                        onClick={() => handleDelete(t._id)}
+                        onClick={() => openConfirmDialog(t._id)}
                         sx={{ 
                           borderRadius: 1,
                           textTransform: 'none',
@@ -382,6 +404,31 @@ export default function Home() {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* Revoke Confirm Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Confirm Revocation"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to revoke this transfer? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} color="error" autoFocus>
+            Revoke
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
