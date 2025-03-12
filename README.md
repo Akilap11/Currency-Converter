@@ -40,17 +40,8 @@ npm run dev  # Run frontend
 ```bash
 cd backend
 npm install
-cp .env.example .env  # Create the env file
+cp env.file .env  # Create the env file
 npm start  # Run backend
-```
-
-## Environment Variables
-
-Create a `.env` file in the `backend/` directory based on `.env.example` and add the required values:
-
-```properties
-MONGO_URI=mongodb+srv://akilatharinda05:Akilap1@cluster0.vwsjg.mongodb.net/currencyConverter?retryWrites=true&w=majority
-EXCHANGE_RATE_API_KEY=bc25b5f9abfc0d87516b7189
 ```
 
 ## Features
