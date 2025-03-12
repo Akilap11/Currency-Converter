@@ -41,7 +41,7 @@ export default function Home() {
     { name: "India", currency: "INR" },
   ];
 
-  // Fetch Transfers
+  // Fetch all Transfers
   const fetchTransfers = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/transfers");
@@ -103,7 +103,7 @@ export default function Home() {
     };
   }, [fromCountry, toCountry, amount, fetchConversion]);
 
-  // Handle Transfer request
+  // Handle Transfer POST request
   const handleTransfer = async () => {
     if (!amount) {
       setError("Amount is required");
@@ -202,6 +202,7 @@ export default function Home() {
             </Typography>
   
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mb: 3 }}>
+              {/* Country Select Fields */}
               <Select
                 fullWidth
                 value={fromCountry}

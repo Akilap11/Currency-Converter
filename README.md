@@ -17,6 +17,20 @@ currency-converter/
 ├── README.md      # Project documentation
 ```
 
+## API Endpoints Documentation
+
+### Exchange Rates
+
+- **GET** `/api/convert` → Fetch exchange rates from ExchangeRate-API
+
+### Transfers
+
+- **POST** `/api/transfer` → Create a new transfer
+- **GET** `/api/transfers` → Retrieve all transfer history
+- **DELETE** `/api/transfer/:id` → Revoke a specific transfer by ID
+
+---
+
 ## Installation & Setup
 
 ### Clone the Repository
@@ -65,17 +79,3 @@ MONGO_URI="MONGODB URI from env.file in Backend folder""
 - Transfer history tracking with an option to revoke a transfer
 - Data stored in MongoDB Atlas
 - User-friendly UI with Material UI components
-
-## API Endpoints Documentation
-
-### Exchange Rates
-
-- **GET** `/api/rates` → Fetch exchange rates from ExchangeRate-API
-
-### Transfers
-
-- **POST** `/api/transfer` → Create a new transfer
-- **GET** `/api/transfer` → Retrieve all transfer history
-- **DELETE** `/api/transfer/:id` → Revoke a specific transfer by ID
-
----
