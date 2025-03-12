@@ -59,17 +59,7 @@ npm install -g nodemon
 ```bash
 cd backend
 npm install
-cp env.file .env  # Create the env file
 npx nodemon  # Run backend
-```
-
-### Environment Variables
-
-Create a `.env` file inside the `backend` directory and add the following environment variables:
-
-```bash
-EXCHANGE_RATE_API_KEY="API KEY from env.file in Backend folder"
-MONGO_URI="MONGODB URI from env.file in Backend folder""
 ```
 
 ## Features
